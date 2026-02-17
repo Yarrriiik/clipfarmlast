@@ -1,14 +1,15 @@
 package ru.dyabkinyarexample.clipfarmlast.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,15 +18,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+data class ServerOption(
+    val icon: String,
+    val name: String,
+    val details: String
+)
+
+val serverOptions = listOf(
+    ServerOption("⚙️", "EU-West (Amsterdam)", "Цена: $0.42/мин; Скорость: ~1k (быстро); Пинг: ~35ms"),
+    ServerOption("⚙️", "EU-Central (Frankfurt)", "Цена: $0.39/мин; Скорость: ~1.0k (быстро); Пинг: ~45ms"),
+    ServerOption("⚙️", "ES-East (Virginia)", "Цена: $0.33/мин; Скорость: ~1.2k (пинг: ~90ms)"),
+    ServerOption("⚙️", "ES-West (Singapore)", "Цена: $0.45/мин; Скорость: ~1.0k (пинг: ~180ms)"),
+    ServerOption("⚙️", "Asia-Tokyo", "Цена: $0.52/мин; Скорость: ~1.35k; Пинг: ~220ms")
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewProjectScreen(navController: NavController) {
-    var projectName by remember { mutableStateOf("") }
-    var bannerType by remember { mutableStateOf("Top") }
-    var filmUrl by remember { mutableStateOf("") }
-    var clipDuration by remember { mutableStateOf("45-120") }
-    var clipCount by remember { mutableStateOf("5-15") }
-
+fun ServerReplacementScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,7 +64,7 @@ fun NewProjectScreen(navController: NavController) {
             // Заголовок
             item {
                 Text(
-                    text = "Ваш новый проект",
+                    text = "Выберите регион\nсервера обработки",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -65,63 +74,21 @@ fun NewProjectScreen(navController: NavController) {
             // Подзаголовок
             item {
                 Text(
-                    text = "Введите пресет",
+                    text = "Нажмите для выбора",
                     fontSize = 16.sp,
                     color = Color(0xFFB0B0B0)
                 )
             }
 
             item {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // Поле 1: Название проекта
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Название проекта: name",
-                    value = projectName,
-                    onValueChange = { projectName = it }
-                )
-            }
-
-            // Поле 2: Тип баннера
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Тип баннера: Top / Bottom",
-                    value = bannerType,
-                    onValueChange = { bannerType = it }
-                )
-            }
-
-            // Поле 3: Ссылка на фильм
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Ссылка на фильме / сервал: url",
-                    value = filmUrl,
-                    onValueChange = { filmUrl = it }
-                )
-            }
-
-            // Поле 4: Среднее время клипа
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Среднее время клипа: 45-120 сек",
-                    value = clipDuration,
-                    onValueChange = { clipDuration = it }
-                )
-            }
-
-            // Поле 5: Количество клипов
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Количество клипов: 5-15 шт",
-                    value = clipCount,
-                    onValueChange = { clipCount = it }
+            // Список серверов
+            items(serverOptions) { server ->
+                ServerOptionItem(
+                    server = server,
+                    onClick = { navController.popBackStack() }
                 )
             }
 
@@ -129,10 +96,10 @@ fun NewProjectScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
-            // Кнопка "Запустить генерацию"
+            // Кнопка "Обновить конфигурацию"
             item {
                 Button(
-                    onClick = { navController.navigate("projects") },
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
@@ -140,7 +107,7 @@ fun NewProjectScreen(navController: NavController) {
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        "Запустить генерацию",
+                        "Обновить конфигурацию",
                         color = Color(0xFF141718),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -156,32 +123,43 @@ fun NewProjectScreen(navController: NavController) {
 }
 
 @Composable
-private fun ProjectInputField(
-    icon: String,
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
+private fun ServerOptionItem(
+    server: ServerOption,
+    onClick: () -> Unit
 ) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .clickable { onClick() }
+            .padding(8.dp),
         color = Color(0xFF1a1a1a),
         shape = RoundedCornerShape(8.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(icon, fontSize = 20.sp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(server.icon, fontSize = 20.sp)
+                Text(
+                    server.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
+                )
+            }
             Text(
-                label,
-                fontSize = 14.sp,
-                color = Color(0xFFB0B0B0),
-                modifier = Modifier.weight(1f)
+                server.details,
+                fontSize = 12.sp,
+                color = Color(0xFF888888),
+                lineHeight = 16.sp
             )
         }
     }

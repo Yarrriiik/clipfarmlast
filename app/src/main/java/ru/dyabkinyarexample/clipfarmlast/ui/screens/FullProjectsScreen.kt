@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,63 +18,41 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-data class ProjectItem(
+data class FullProjectItem(
     val name: String,
     val date: String,
     val progress: String,
     val icon: String
 )
 
-val sampleProjects = listOf(
-    ProjectItem("Бесстыжие", "26.11.2025", "10/15", "👥"),
-    ProjectItem("Форс-мажоры", "21.11.2025", "5/8", "⚡"),
-    ProjectItem("Побег", "19.11.2025", "11/19", "🏃")
+val fullProjects = listOf(
+    FullProjectItem("Бесстыжие", "26.11.2025", "10/15", "👥"),
+    FullProjectItem("Форс-мажоры", "21.11.2025", "5/8", "⚡"),
+    FullProjectItem("Побег", "19.11.2025", "11/19", "🏃"),
+    FullProjectItem("Сотня", "20.11.2025", "10/15", "🎬"),
+    FullProjectItem("Танки", "21.11.2025", "5/8", "🚗"),
+    FullProjectItem("Форсаж", "19.11.2025", "11/19", "🏎️")
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProjectsScreen(navController: NavController) {
+fun FullProjectsScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0d0d0d))
     ) {
-        // Top Bar с Profile
+        // Top Bar
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFF141718))
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(
-                    text = "profile",
-                    fontSize = 12.sp,
-                    color = Color(0xFF888888)
-                )
-                Text(
-                    text = "Yarriik",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
-
-            // Avatar placeholder
-            Surface(
-                modifier = Modifier
-                    .size(60.dp)
-                    .clickable { /* Открыть профиль */ },
-                color = Color(0xFF1a1a1a),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("👤", fontSize = 28.sp)
-                }
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Назад", tint = Color.White)
             }
         }
 
@@ -83,44 +61,32 @@ fun ProjectsScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Последние проекты - заголовок
+            // Заголовок
             item {
                 Text(
-                    text = "Последние проекты",
-                    fontSize = 18.sp,
+                    text = "Проекты",
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
             }
 
-            // Список проектов
-            items(sampleProjects) { project ->
-                ProjectCard(project, navController)
-            }
-
-            // Первая кнопка - "Управление проектами"
             item {
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = { navController.navigate("settings_project") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF374151)),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        "Управление проектами",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // Вторая кнопка - "Создать новый проект"
+            // Список проектов
+            items(fullProjects) { project ->
+                FullProjectCard(project, navController)
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            // Кнопка "Создать новый проект"
             item {
                 Button(
                     onClick = { navController.navigate("new_project") },
@@ -147,7 +113,7 @@ fun ProjectsScreen(navController: NavController) {
 }
 
 @Composable
-fun ProjectCard(project: ProjectItem, navController: NavController) {
+private fun FullProjectCard(project: FullProjectItem, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()

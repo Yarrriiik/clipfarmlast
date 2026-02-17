@@ -1,14 +1,15 @@
 package ru.dyabkinyarexample.clipfarmlast.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,15 +18,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+data class ConfigOption(
+    val icon: String,
+    val label: String
+)
+
+val configOptions = listOf(
+    ConfigOption("⚙️", "Формат экспорта"),
+    ConfigOption("⚙️", "Битрейт"),
+    ConfigOption("⚙️", "Субтитры"),
+    ConfigOption("⚙️", "Удаление тишины"),
+    ConfigOption("⚙️", "Брендинг баннера")
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewProjectScreen(navController: NavController) {
-    var projectName by remember { mutableStateOf("") }
-    var bannerType by remember { mutableStateOf("Top") }
-    var filmUrl by remember { mutableStateOf("") }
-    var clipDuration by remember { mutableStateOf("45-120") }
-    var clipCount by remember { mutableStateOf("5-15") }
-
+fun ConfigurationScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,7 +63,7 @@ fun NewProjectScreen(navController: NavController) {
             // Заголовок
             item {
                 Text(
-                    text = "Ваш новый проект",
+                    text = "Конфигурация",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -65,7 +73,7 @@ fun NewProjectScreen(navController: NavController) {
             // Подзаголовок
             item {
                 Text(
-                    text = "Введите пресет",
+                    text = "Выбор параметра конфигурации",
                     fontSize = 16.sp,
                     color = Color(0xFFB0B0B0)
                 )
@@ -75,53 +83,11 @@ fun NewProjectScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Поле 1: Название проекта
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Название проекта: name",
-                    value = projectName,
-                    onValueChange = { projectName = it }
-                )
-            }
-
-            // Поле 2: Тип баннера
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Тип баннера: Top / Bottom",
-                    value = bannerType,
-                    onValueChange = { bannerType = it }
-                )
-            }
-
-            // Поле 3: Ссылка на фильм
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Ссылка на фильме / сервал: url",
-                    value = filmUrl,
-                    onValueChange = { filmUrl = it }
-                )
-            }
-
-            // Поле 4: Среднее время клипа
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Среднее время клипа: 45-120 сек",
-                    value = clipDuration,
-                    onValueChange = { clipDuration = it }
-                )
-            }
-
-            // Поле 5: Количество клипов
-            item {
-                ProjectInputField(
-                    icon = "⚙️",
-                    label = "Количество клипов: 5-15 шт",
-                    value = clipCount,
-                    onValueChange = { clipCount = it }
+            // Список опций конфигурации
+            items(configOptions) { option ->
+                ConfigOptionItem(
+                    icon = option.icon,
+                    label = option.label
                 )
             }
 
@@ -129,10 +95,10 @@ fun NewProjectScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
-            // Кнопка "Запустить генерацию"
+            // Кнопка "Обновить конфигурацию"
             item {
                 Button(
-                    onClick = { navController.navigate("projects") },
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
@@ -140,7 +106,7 @@ fun NewProjectScreen(navController: NavController) {
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        "Запустить генерацию",
+                        "Обновить конфигурацию",
                         color = Color(0xFF141718),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -156,16 +122,15 @@ fun NewProjectScreen(navController: NavController) {
 }
 
 @Composable
-private fun ProjectInputField(
+private fun ConfigOptionItem(
     icon: String,
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
+    label: String
 ) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(56.dp)
+            .clickable { /* Выбор опции */ },
         color = Color(0xFF1a1a1a),
         shape = RoundedCornerShape(8.dp)
     ) {
