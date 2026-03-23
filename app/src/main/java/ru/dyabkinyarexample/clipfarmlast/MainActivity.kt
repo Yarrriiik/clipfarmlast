@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.dyabkinyarexample.clipfarmlast.ui.screens.*
+import ru.dyabkinyarexample.clipfarmlast.ui.screens.RegisterScreen
 import ru.dyabkinyarexample.clipfarmlast.ui.theme.ClipfarlastTheme
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -43,6 +44,7 @@ fun ClipFactoryApp() {
         composable("splash") { SplashScreen(navController) }
         composable("login") { LoginScreen(navController) }
         composable("login2") { LoginScreen2(navController) }
+        composable("register") { RegisterScreen(navController) }
         composable("projects") { ProjectsScreen(navController) }
         composable("new_project") { NewProjectScreen(navController) }
         composable("settings_project") { SettingsProjectScreen(navController) }
@@ -75,4 +77,3 @@ private fun MainActivityPreview() {
         }
     }
 }
-

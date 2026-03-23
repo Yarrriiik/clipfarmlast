@@ -9,19 +9,36 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import ru.dyabkinyarexample.clipfarmlast.ClipFarmApplication
+import ru.dyabkinyarexample.clipfarmlast.viewmodel.AuthViewModel
+import ru.dyabkinyarexample.clipfarmlast.viewmodel.AuthViewModelFactory
 
 @Composable
 fun LoginScreen2(navController: NavController) {
+    val context = LocalContext.current
+    val application = context.applicationContext as ClipFarmApplication
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(application))
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        // Reset error on compose
+        errorMessage = ""
+    }
 
     Column(
         modifier = Modifier
@@ -94,16 +111,45 @@ fun LoginScreen2(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Error message
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
         // Кнопка "Войти"
         Button(
-            onClick = { navController.navigate("projects") { popUpTo("login") { inclusive = true } } },
+            onClick = {
+                if (email.isNotBlank() && password.isNotBlank()) {
+                    isLoading = true
+                    authViewModel.login(email, password) { success, message ->
+                        isLoading = false
+                        if (success) {
+                            navController.navigate("projects") { popUpTo("login") { inclusive = true } }
+                        } else {
+                            errorMessage = message
+                        }
+                    }
+                } else {
+                    errorMessage = "Please fill in all fields"
+                }
+            },
+            enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00D4FF)),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("Войти", color = Color(0xFF141718), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            if (isLoading) {
+                CircularProgressIndicator(color = Color(0xFF141718), modifier = Modifier.size(20.dp))
+            } else {
+                Text("Войти", color = Color(0xFF141718), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -113,7 +159,7 @@ fun LoginScreen2(navController: NavController) {
             text = "Создать новый аккаунт? Зарегистрироваться",
             fontSize = 12.sp,
             color = Color(0xFF888888),
-            modifier = Modifier.clickable { /* навигация на регистрацию */ }
+            modifier = Modifier.clickable { navController.navigate("register") }
         )
 
         Spacer(modifier = Modifier.height(30.dp))
