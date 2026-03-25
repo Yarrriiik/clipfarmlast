@@ -37,6 +37,7 @@ fun LoginScreen2(navController: NavController) {
     var loggedInEmail by remember { mutableStateOf("") }
 
 
+
     LaunchedEffect(Unit) {
         // Reset error on compose
         errorMessage = ""
