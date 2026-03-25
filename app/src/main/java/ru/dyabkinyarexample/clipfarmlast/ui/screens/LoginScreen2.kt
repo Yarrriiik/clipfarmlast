@@ -34,6 +34,8 @@ fun LoginScreen2(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    var loggedInEmail by remember { mutableStateOf("") }
+
 
     LaunchedEffect(Unit) {
         // Reset error on compose
@@ -129,7 +131,8 @@ fun LoginScreen2(navController: NavController) {
                     authViewModel.login(email, password) { success, message ->
                         isLoading = false
                         if (success) {
-                            navController.navigate("projects") { popUpTo("login") { inclusive = true } }
+                            loggedInEmail = email
+                            navController.navigate("projects/$email") { popUpTo("login") { inclusive = true } }
                         } else {
                             errorMessage = message
                         }
@@ -153,6 +156,7 @@ fun LoginScreen2(navController: NavController) {
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+
 
         // Ссылка на регистрацию
         Text(

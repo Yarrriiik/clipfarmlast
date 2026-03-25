@@ -34,12 +34,15 @@ val sampleProjects = listOf(
 )
 
 @Composable
-fun ProjectsScreen(navController: NavController) {
+fun ProjectsScreen(navController: NavController,userEmail: String) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF0d0d0d))
-    ) {
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF141718))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         // Основной контент
         LazyColumn(
             modifier = Modifier
@@ -74,11 +77,17 @@ fun ProjectsScreen(navController: NavController) {
                             )
                             Text(
                                 text = "Yarriik",
-                                fontSize = 32.sp,
+                                fontSize = 24.sp,  // Уменьши размер, чтобы поместилось
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
+                            Text(
+                                text = userEmail,
+                                fontSize = 14.sp,
+                                color = Color(0xFF888888)
+                            )
                         }
+
 
                         // Изображение справа (большое)
                         Surface(
@@ -152,7 +161,27 @@ fun ProjectsScreen(navController: NavController) {
                     )
                 }
             }
-
+            item {
+                Button(
+                    onClick = { navController.navigate("settings/$userEmail") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00D4FF))
+                ) {
+                   Text("Настройки аккаунта", color = Color(0xFF141718))
+                }
+                // Кнопка "Выход"
+                Button(
+                    onClick = {
+                        navController.navigate("login") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("Выход", color = Color.White)
+                }
+            }
             item {
                 Spacer(modifier = Modifier.height(20.dp))
             }

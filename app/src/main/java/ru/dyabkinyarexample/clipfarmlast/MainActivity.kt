@@ -45,7 +45,10 @@ fun ClipFactoryApp() {
         composable("login") { LoginScreen(navController) }
         composable("login2") { LoginScreen2(navController) }
         composable("register") { RegisterScreen(navController) }
-        composable("projects") { ProjectsScreen(navController) }
+        composable("projects/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            ProjectsScreen(navController, email)
+        }
         composable("new_project") { NewProjectScreen(navController) }
         composable("settings_project") { SettingsProjectScreen(navController) }
         composable("full_projects") { FullProjectsScreen(navController) }
@@ -59,7 +62,11 @@ fun ClipFactoryApp() {
 
         composable("server_selection") { ServerSelectionScreen(navController) }
         composable("monitoring") { MonitoringScreen(navController) }
-        composable("settings") { SettingsScreen(navController) }
+        composable("settings/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            SettingsScreen(navController, email)
+        }
+
     }
 }
 

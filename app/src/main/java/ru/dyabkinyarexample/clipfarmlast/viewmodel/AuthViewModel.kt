@@ -31,4 +31,28 @@ class AuthViewModel(private val application: ClipFarmApplication) : ViewModel() 
             }
         }
     }
+    fun updatePassword(email: String, newPassword: String, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            val user = application.database.userDao().getUserByEmail(email)
+            if (user != null) {
+                val updatedUser = user.copy(password = newPassword)
+                application.database.userDao().updateUser(updatedUser)
+                onResult(true, "Пароль обновлен")
+            } else {
+                onResult(false, "Пользователь не найден")
+            }
+        }
+    }
+
+    fun deleteUser(email: String, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            val user = application.database.userDao().getUserByEmail(email)
+            if (user != null) {
+                application.database.userDao().deleteUser(user)
+                onResult(true, "Аккаунт удален")
+            } else {
+                onResult(false, "Пользователь не найден")
+            }
+        }
+    }
 }
