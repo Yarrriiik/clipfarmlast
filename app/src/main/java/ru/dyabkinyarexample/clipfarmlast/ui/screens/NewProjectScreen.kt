@@ -132,7 +132,7 @@ fun NewProjectScreen(navController: NavController) {
             // Кнопка "Запустить генерацию"
             item {
                 Button(
-                    onClick = { navController.navigate("projects") },
+                    onClick = { navController.navigate("full_projects") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),

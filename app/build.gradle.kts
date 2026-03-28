@@ -56,6 +56,9 @@ dependencies {
     // Navigation Compose (ГЛАВНОЕ!)
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
+    // Map (OpenStreetMap)
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     // Room database

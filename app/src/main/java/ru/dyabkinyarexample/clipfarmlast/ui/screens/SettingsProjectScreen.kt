@@ -93,10 +93,8 @@ fun SettingsProjectScreen(navController: NavController) {
                             "Проекты" -> navController.navigate("full_projects")
                             "Изменение конфигурации проекта" -> navController.navigate("configuration")
                             "Нагрузка серверов" -> navController.navigate("server_load")
-                            "Выбор серверов" -> navController.navigate("server_processing")
+                            "Выбор серверов" -> navController.navigate("server_selection")
                             "Остаток на балансе" -> navController.navigate("card_balance")
-
-                            "Нагрузка серверов" -> navController.navigate("server_selection")
                             else -> { /* Другие переходы */ }
                         }
                     }
